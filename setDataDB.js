@@ -1,29 +1,23 @@
 const elasticsearch = require('elasticsearch');
 const texts = require('./data.json');
 
-const fs = require('fs').promises;
-
-
-function getClient() {
+async function createDB() {
     const client = new elasticsearch.Client({
       host: 'localhost:9200',
-      // log: 'trace'
     });
-  
-    return client;
-  }
 
+    console.log(client)
+    let i = 0
 
-function createDB() {
-    const client = getClient();
-    for (arq of texts){
-        client.index({
-            index: 'dhbb',
-            type: "dhbb",
-            body: arq
-        })
-    }
-    console.log("ok!")
+    for(let j =0;j<texts.length;j++){
+      client.index({
+          index: 'docsdhbb',
+          type: "docsdhbb",
+          body: texts[j]
+      })
+      i += 1
+  };
+  console.log(i)
 }
 
 createDB();

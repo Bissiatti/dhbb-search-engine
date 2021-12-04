@@ -47,9 +47,9 @@ app.get('/api/dhbb-all',async (req,res)=>{
 })
 
 
-app.get('/:data',function(req,res){
+app.get('/api/search/:data',function(req,res){
   const routeParams = req.params;
   var data = routeParams.data;
-    
+  console.log(data);
 })
 
