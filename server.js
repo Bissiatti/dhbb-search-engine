@@ -51,5 +51,16 @@ app.get('/api/search/:data',function(req,res){
   const routeParams = req.params;
   var data = routeParams.data;
   console.log(data);
+  query = client.search({
+    index: 'dhbb_2',
+    body: {
+      query: {
+        match: { name: data }
+      }
+    }
+  }, (err, result) => {
+    if (err) console.log(err)
+    res.send(result.hits.hits)
+  })
 })
 

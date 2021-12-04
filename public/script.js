@@ -7,7 +7,7 @@ var filter = [];
 
 lupa.addEventListener("click",()=>{
     console.log(search.value);
-    fetch("/api/search/" + search.value);
+    fetch("/api/search/" + search.value).then(data=>data.json()).then(data=>console.log(data));
 })
 
 function createSidebar() {
