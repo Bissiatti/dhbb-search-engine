@@ -220,6 +220,48 @@ function createBio(text) {
 
     tipo = document.createElement("div")
     tipo.classList.add("infoMark")
+    tipo.appendChild(document.createTextNode("Pai do indivíduo:"))
+
+    form = document.createElement("form");
+    input = document.createElement("input");
+    form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        filter["pai"] = e.target[0].value;
+        let marked = document.createElement("div")
+        marked.classList.add("marked")
+        marked.appendChild(document.createTextNode(e.target[0].value))
+        allMarked.appendChild(marked);
+        e.path[0].innerHTML = "";
+        console.log(filter);
+    })
+
+    form.appendChild(tipo);
+    form.appendChild(input);
+    column.appendChild(form);
+
+    tipo = document.createElement("div")
+    tipo.classList.add("infoMark")
+    tipo.appendChild(document.createTextNode("Mãe do indivíduo:"))
+
+    form = document.createElement("form");
+    input = document.createElement("input");
+    form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        filter["Mãe"] = e.target[0].value;
+        let marked = document.createElement("div")
+        marked.classList.add("marked")
+        marked.appendChild(document.createTextNode(e.target[0].value))
+        allMarked.appendChild(marked);
+        e.path[0].innerHTML = "";
+        console.log(filter);
+    })
+
+    form.appendChild(tipo);
+    form.appendChild(input);
+    column.appendChild(form);
+
+    tipo = document.createElement("div")
+    tipo.classList.add("infoMark")
     tipo.appendChild(document.createTextNode("Autor do documento:"))
 
     form = document.createElement("form");
