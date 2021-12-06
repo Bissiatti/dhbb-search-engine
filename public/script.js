@@ -13,25 +13,7 @@ var filter = {must:[]};
 lupa.addEventListener("click",()=>{
     console.log(search.value);
     fetch("/api/search/" + search.value).then(data=>data.json())
-        .then(data=>{
-            content.innerHTML  = "";
-            if (data == []){
-                let div = document.createElement("div");
-                div.classList.add("docs");
-                div.innerHTML = "<p>Sem resultados</p>";
-                content.appendChild(div);
-            }
-            for(doc of data){
-                let div = document.createElement("div");
-                div.classList.add("docs");
-                div.innerHTML = "Documento de número: <strong>" + 
-                                doc["_source"]["document"] +
-                                "</strong> </br> <p>" +
-                                doc["_source"]["text"].replace(/\n\n/g, "</p><p>") +
-                                "</p>";
-                content.appendChild(div);
-            }
-        });
+        .then(data=>addDocsHTML(data));
 })
 
 function createType() {
@@ -292,7 +274,7 @@ function createBio(text) {
         fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
         .then(data=>{
             console.log(data);
-            
+            addDocsHTML(data);
         })
     })
     
@@ -331,57 +313,71 @@ function createTema(text) {
     tipo.classList.add("infoMark")
     tipo.appendChild(document.createTextNode("Tipo:"))
 
-
-    let mark = document.createElement("input")
-    mark.classList.add("marks")
-    mark.setAttribute("type","checkbox");
-    
-    mark.addEventListener('click',(e)=>{
-        addJsonSearch("Tipo", "Organização");
-        let marked = document.createElement("div")
-        marked.classList.add("marked")
-        marked.appendChild(document.createTextNode("Organização"))
-        allMarked.appendChild(marked);
-        e.path[2].innerHTML = "";
-    })
-    
-    let op1 = document.createElement("div")
-    op1.classList.add("opt")
-    op1.appendChild(mark);
-    op1.appendChild(document.createTextNode("Masculino"));
-
-    mark = document.createElement("input")
-    mark.classList.add("marks")
-    mark.setAttribute("type","checkbox");
-
-    mark.addEventListener('click',(e)=>{
-        filter["sexo"] = "Feminino";
-        let marked = document.createElement("div")
-        marked.classList.add("marked")
-        marked.appendChild(document.createTextNode("Feminino"))
-        allMarked.appendChild(marked);
-        e.path[2].innerHTML = "";
-    })
-
-    let op2 = document.createElement("div")
-    op2.classList.add("opt") 
-    op2.appendChild(mark);
-    op2.appendChild(document.createTextNode("Feminino"))
-
     let d = document.createElement("div")
+    const tipos = ['Formulação Política', 'Formulação política', 'Documento', 'Conceito', 'Evento', 'Organização']
+
     d.appendChild(tipo);
-    d.appendChild(op1);
-    d.appendChild(op2);
+
+    for(let i of tipos){
+        let mark = document.createElement("input")
+        mark.classList.add("marks")
+        mark.setAttribute("type","checkbox");
+        mark.addEventListener('click',(e)=>{
+            addJsonSearch("tipo", i);
+            let marked = document.createElement("div")
+            marked.classList.add("marked")
+            marked.appendChild(document.createTextNode(i))
+            allMarked.appendChild(marked);
+            e.path[2].innerHTML = "";
+        })
+        let op1 = document.createElement("div")
+        op1.classList.add("opt")
+        op1.appendChild(mark);
+        op1.appendChild(document.createTextNode(i));
+        d.appendChild(op1);
+
+    }
+    
     column.appendChild(d);
+
+    tipo = document.createElement("div")
+    tipo.classList.add("infoMark")
+    tipo.appendChild(document.createTextNode("Subtipos:"))
+
+    d = document.createElement("div")
+    const subtipos = ['Carta', 'Imprensa', 'Televisão', 'Manifesto', 'Jurídica', 'Rádio', 'Plano/Programa', 'Empresa', 'Legislação', 'Sociedade civil', 'Político-administrativa', 'Ensino', 'Acordo/Tratado']
+
+    d.appendChild(tipo);
+
+    for(let i of subtipos){
+        let mark = document.createElement("input")
+        mark.classList.add("marks")
+        mark.setAttribute("type","checkbox");
+        mark.addEventListener('click',(e)=>{
+            addJsonSearch("subtipo", i);
+            let marked = document.createElement("div")
+            marked.classList.add("marked")
+            marked.appendChild(document.createTextNode(i))
+            allMarked.appendChild(marked);
+            e.path[2].innerHTML = "";
+        })
+        let op1 = document.createElement("div")
+        op1.classList.add("opt")
+        op1.appendChild(mark);
+        op1.appendChild(document.createTextNode(i));
+        d.appendChild(op1);
+
+    }
+    
+    column.appendChild(d);
+
     
     let send = document.createElement("button")
     send.classList.add("send")
     send.appendChild(document.createTextNode("Enviar"))
     send.addEventListener("click",()=>{
         fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
-        .then(data=>{
-            console.log(data);
-        })
+        .then(data=>addDocsHTML(data))
     })
     
     column.appendChild(send);
@@ -390,4 +386,25 @@ function createTema(text) {
 
 function addJsonSearch(key,value){
     filter.must.push({match:{key,value}})
+}
+
+function addDocsHTML(data) {
+    content.innerHTML  = "";
+    console.log(data);
+    if (data == ['Sem resultados']){
+        let div = document.createElement("div");
+        div.classList.add("docs");
+        div.innerHTML = "<p>Sem resultados</p>";
+        content.appendChild(div);
+    }
+    for(doc of data){
+        let div = document.createElement("div");
+        div.classList.add("docs");
+        div.innerHTML = "Documento de número: <strong>" + 
+                        doc["_source"]["document"] +
+                        "</strong> </br> <p>" +
+                        doc["_source"]["text"].replace(/\n\n/g, "</p><p>") +
+                        "</p>";
+        content.appendChild(div);
+    }
 }

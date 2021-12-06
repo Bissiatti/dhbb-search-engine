@@ -34,7 +34,7 @@ var data = "";
 
 app.get('/api/dhbb-all',async (req,res)=>{
   let data = await client.search({
-    index: "dhbb_test"
+    index: "dhbb_fgv"
   })
   return res.json(data);
 })
@@ -44,7 +44,7 @@ app.get('/api/search/:data',function(req,res){
   const routeParams = req.params;
   data = routeParams.data;
   query = client.search({
-    index: 'docsdhbb',
+    index: 'dhbb_fgv',
     size: 1000,
     body: {
       query: {
@@ -68,7 +68,7 @@ app.get('/api/fil/:filter',function(req,res){
   filter.must.push({match:{text: data}})
   console.log(filter);
   query = client.search({
-    index: 'docsdhbb',
+    index: 'dhbb_fgv',
     size: 1000,
     body: {
       query: {

@@ -1,18 +1,19 @@
 const elasticsearch = require('elasticsearch');
 const texts = require('./data.json');
 
-async function createDB() {
+const l = texts.length
+
+async function createDB(i0,i1) {
     const client = new elasticsearch.Client({
       host: 'localhost:9200',
     });
 
-    console.log(client)
     let i = 0
 
-    for(let j =0;j<texts.length;j++){
+    for(let j =i0;j<i1;j++){
       client.index({
-          index: 'docsdhbb',
-          type: "docsdhbb",
+          index: 'dhbb_fgv',
+          type: "dhbb_fgv",
           body: texts[j]
       })
       i += 1
@@ -20,4 +21,4 @@ async function createDB() {
   console.log(i)
 }
 
-createDB();
+createDB(0,l/2).then(createDB(l/2,l));
