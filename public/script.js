@@ -11,7 +11,6 @@ var filter = {must:[]};
 
 
 lupa.addEventListener("click",()=>{
-    console.log(search.value);
     fetch("/api/search/" + search.value).then(data=>data.json())
         .then(data=>addDocsHTML(data));
 })
@@ -66,7 +65,6 @@ function createType() {
 createType();
 
 function createBio(text) {
-    console.log(filter);
     column.innerHTML = "";
 
     let h2 = document.createElement("h2")
@@ -155,7 +153,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -176,7 +173,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -197,7 +193,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -218,7 +213,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -239,7 +233,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -260,7 +253,6 @@ function createBio(text) {
         marked.appendChild(document.createTextNode(e.target[0].value))
         allMarked.appendChild(marked);
         e.path[0].innerHTML = "";
-        console.log(filter);
     })
 
     form.appendChild(tipo);
@@ -273,7 +265,6 @@ function createBio(text) {
     send.addEventListener("click",()=>{
         fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
         .then(data=>{
-            console.log(data);
             addDocsHTML(data);
         })
     })
@@ -284,7 +275,6 @@ function createBio(text) {
 
 
 function createTema(text) {
-    console.log(filter);
     column.innerHTML = "";
 
     let h2 = document.createElement("h2")
@@ -385,19 +375,20 @@ function createTema(text) {
 }
 
 function addJsonSearch(key,value){
-    filter.must.push({match:{key,value}})
+    let c = {}
+    c[key] = value
+    filter.must.push({match:c})
 }
 
 function addDocsHTML(data) {
     content.innerHTML  = "";
-    console.log(data);
     if (data == ['Sem resultados']){
         let div = document.createElement("div");
         div.classList.add("docs");
         div.innerHTML = "<p>Sem resultados</p>";
         content.appendChild(div);
     }
-    for(doc of data){
+    else{for(doc of data){
         let div = document.createElement("div");
         div.classList.add("docs");
         div.innerHTML = "Documento de número: <strong>" + 
@@ -406,5 +397,5 @@ function addDocsHTML(data) {
                         doc["_source"]["text"].replace(/\n\n/g, "</p><p>") +
                         "</p>";
         content.appendChild(div);
-    }
+    }}
 }

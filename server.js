@@ -1,11 +1,6 @@
 const express = require('express');
 const app = express();
 const elasticsearch = require('elasticsearch');
-
- 
-const readFileSync = require('fs').readFileSync;
-const { text } = require('express');
-
 const client = getClient()
 
 
@@ -53,7 +48,6 @@ app.get('/api/search/:data',function(req,res){
     }
   }, (err, result) => {
     if (err) console.log(err);
-    console.log(data)
     if(result.hits != undefined){
       res.send(result.hits.hits)
     }else {
@@ -66,7 +60,6 @@ app.get('/api/fil/:filter',function(req,res){
   const routeParams = req.params;
   var filter = JSON.parse(routeParams.filter);
   filter.must.push({match:{text: data}})
-  console.log(filter);
   query = client.search({
     index: 'dhbb_fgv',
     size: 1000,
@@ -77,7 +70,6 @@ app.get('/api/fil/:filter',function(req,res){
     }
   }, (err, result) => {
     if (err) console.log(err);
-    console.log(data)
     if(result.hits != undefined){
       res.send(result.hits.hits)
     }else {
