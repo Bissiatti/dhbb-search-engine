@@ -1,9 +1,7 @@
 const express = require('express');
 const app = express();
 const elasticsearch = require('elasticsearch');
-const texts = require('./data.json');
 
-const fs = require('fs').promises;
  
 const readFileSync = require('fs').readFileSync;
 const { text } = require('express');
@@ -31,12 +29,7 @@ app.use(express.static('public'))
 app.listen(app.get('port'),host, function () {
   console.log("App listening on port 3000!");
 });
-
-app.get('/',(request,response) =>{
-
-    const client = getClient();
-    response.json(message="ok")
-})
+var data = "";
 
 
 app.get('/api/dhbb-all',async (req,res)=>{
@@ -49,18 +42,47 @@ app.get('/api/dhbb-all',async (req,res)=>{
 
 app.get('/api/search/:data',function(req,res){
   const routeParams = req.params;
-  var data = routeParams.data;
-  console.log(data);
+  data = routeParams.data;
   query = client.search({
-    index: 'dhbb_2',
+    index: 'docsdhbb',
+    size: 1000,
     body: {
       query: {
-        match: { name: data }
+        match: { text : data }
       }
     }
   }, (err, result) => {
-    if (err) console.log(err)
-    res.send(result.hits.hits)
+    if (err) console.log(err);
+    console.log(data)
+    if(result.hits != undefined){
+      res.send(result.hits.hits)
+    }else {
+      res.send(["Sem resultados"])
+    };
+  })
+})
+
+app.get('/api/fil/:filter',function(req,res){
+  const routeParams = req.params;
+  var filter = JSON.parse(routeParams.filter);
+  filter.must.push({match:{text: data}})
+  console.log(filter);
+  query = client.search({
+    index: 'docsdhbb',
+    size: 1000,
+    body: {
+      query: {
+        bool : filter
+      },
+    }
+  }, (err, result) => {
+    if (err) console.log(err);
+    console.log(data)
+    if(result.hits != undefined){
+      res.send(result.hits.hits)
+    }else {
+      res.send(["Sem resultados"])
+    };
   })
 })
 
