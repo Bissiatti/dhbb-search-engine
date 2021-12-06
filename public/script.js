@@ -17,6 +17,7 @@ lupa.addEventListener("click",()=>{
 
 function createType() {
     column.innerHTML = ""
+    search.value = ""
     h2 = document.createElement("h2")
     h2.appendChild(document.createTextNode("Refine sua busca"))
     column.appendChild(h2)
@@ -80,9 +81,10 @@ function createBio(text) {
     clear.classList.add("clear")
     clear.appendChild(document.createTextNode("Limpar filtros"))
     clear.addEventListener("click",()=>{
-        var filter = {must:[]};
+        filter = {must:[]};
         allMarked.textContent = ""
         createType();
+        fetch("/api/clear");
     })
 
     allMarked.appendChild(marked);
@@ -138,10 +140,30 @@ function createBio(text) {
 
     tipo = document.createElement("div")
     tipo.classList.add("infoMark")
-    tipo.appendChild(document.createTextNode("Ano de nascimento:"))
+    tipo.appendChild(document.createTextNode("Nome do indivíduo:"))
 
     let form = document.createElement("form");
     let input = document.createElement("input");
+    form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        addJsonSearch("name", e.target[0].value);
+        let marked = document.createElement("div")
+        marked.classList.add("marked")
+        marked.appendChild(document.createTextNode(e.target[0].value))
+        allMarked.appendChild(marked);
+        e.path[0].innerHTML = "";
+    })
+
+    form.appendChild(tipo);
+    form.appendChild(input);
+    column.appendChild(form);
+
+    tipo = document.createElement("div")
+    tipo.classList.add("infoMark")
+    tipo.appendChild(document.createTextNode("Ano de nascimento:"))
+
+    form = document.createElement("form");
+    input = document.createElement("input");
     input.setAttribute("type","number");
     input.setAttribute("max","2099");
     input.setAttribute("min","1400");
@@ -290,9 +312,10 @@ function createTema(text) {
     clear.classList.add("clear")
     clear.appendChild(document.createTextNode("Limpar filtros"))
     clear.addEventListener("click",(e)=>{
-        var filter = {must:[]};
+        filter = {must:[]};
         allMarked.textContent = ""
         createType();
+        fetch("/api/clear");
     })
 
     allMarked.appendChild(marked);
