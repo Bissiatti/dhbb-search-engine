@@ -211,7 +211,7 @@ function createBio(text) {
     input = document.createElement("input");
     form.addEventListener("submit",(e)=>{
         e.preventDefault();
-        birthplace("cargo",e.target[0].value);
+        addJsonSearch("birthplace", e.target[0].value);
         let marked = document.createElement("div")
         marked.classList.add("marked")
         marked.appendChild(document.createTextNode(e.target[0].value))
