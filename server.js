@@ -25,11 +25,11 @@ app.listen(app.get('port'),host, function () {
   console.log("App listening on port 3000!");
 });
 var data = "";
-var filter = "";
+var filter = {must:[]};;
 
 app.get("/",()=>{
   data = "";
-  filter = "";
+  filter = {must:[]};
 })
 
 app.get('/api/dhbb-all',async (req,res)=>{
@@ -40,12 +40,13 @@ app.get('/api/dhbb-all',async (req,res)=>{
 })
 
 app.get("/api/clear",function() {
-  data = "";
+  filter = {must:[]};
 })
 
 app.get('/api/search/:data',function(req,res){
   const routeParams = req.params;
   data = routeParams.data;
+  filter.must.push({match:{text: data}})
   query = client.search({
     index: 'dhbb_fgv',
     size: 1000,
@@ -62,6 +63,7 @@ app.get('/api/search/:data',function(req,res){
       res.send(["Sem resultados"])
     };
   })
+  filter.must.pop();
 })
 
 app.get('/api/fil/:filter',function(req,res){

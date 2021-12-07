@@ -404,14 +404,9 @@ function addJsonSearch(key,value){
 }
 
 function addDocsHTML(data) {
+    console.log(data.length);
     content.innerHTML  = "";
-    if (data == ['Sem resultados']){
-        let div = document.createElement("div");
-        div.classList.add("docs");
-        div.innerHTML = "<p>Sem resultados</p>";
-        content.appendChild(div);
-    }
-    else{for(doc of data){
+    try{for(doc of data){
         let div = document.createElement("div");
         div.classList.add("docs");
         div.innerHTML = "Documento de número: <strong>" + 
@@ -420,5 +415,14 @@ function addDocsHTML(data) {
                         doc["_source"]["text"].replace(/\n\n/g, "</p><p>") +
                         "</p>";
         content.appendChild(div);
-    }}
+    }}catch{
+        
+        console.log("kkkkkk")
+        let div = document.createElement("div");
+        div.classList.add("docs");
+        div.innerHTML = "<p>Resultado não encontrado.</p>";
+        content.appendChild(div);
+        
+    }
+    
 }
