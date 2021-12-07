@@ -39,8 +39,26 @@ app.get('/api/dhbb-all',async (req,res)=>{
   return res.json(data);
 })
 
-app.get("/api/clear",function() {
+app.get("/api/clear",function(req,res) {
   filter = {must:[]};
+  filter.must.push({match:{text: data}})
+  query = client.search({
+    index: 'dhbb_fgv',
+    size: 1000,
+    body: {
+      query: {
+        bool : filter
+      },
+    }
+  }, (err, result) => {
+    if (err) console.log(err);
+    if(result.hits != undefined){
+      res.send(result.hits.hits)
+    }else {
+      res.send(["Sem resultados"])
+    };
+  })
+  filter.must.pop();
 })
 
 app.get('/api/search/:data',function(req,res){
@@ -69,9 +87,6 @@ app.get('/api/search/:data',function(req,res){
 app.get('/api/fil/:filter',function(req,res){
   const routeParams = req.params;
   filter = JSON.parse(routeParams.filter);
-  if (data != ""){
-    filter.must.push({match:{text: data}})
-  }
   query = client.search({
     index: 'dhbb_fgv',
     size: 1000,
@@ -88,6 +103,5 @@ app.get('/api/fil/:filter',function(req,res){
       res.send(["Sem resultados"])
     };
   })
-  filter.must.pop();
 })
 

@@ -17,7 +17,6 @@ lupa.addEventListener("click",()=>{
 
 function createType() {
     column.innerHTML = ""
-    search.value = ""
     h2 = document.createElement("h2")
     h2.appendChild(document.createTextNode("Refine sua busca"))
     column.appendChild(h2)
@@ -84,7 +83,7 @@ function createBio(text) {
         filter = {must:[]};
         allMarked.textContent = ""
         createType();
-        fetch("/api/clear");
+        fetch("/api/clear").then(data=>data.json()).then(data=>addDocsHTML(data));
     })
 
     allMarked.appendChild(marked);
@@ -285,10 +284,12 @@ function createBio(text) {
     send.classList.add("send")
     send.appendChild(document.createTextNode("Enviar"))
     send.addEventListener("click",()=>{
+        addJsonSearch("text",search.value);
         fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
         .then(data=>{
             addDocsHTML(data);
         })
+        filter.must.pop();
     })
     
     column.appendChild(send);
@@ -315,7 +316,7 @@ function createTema(text) {
         filter = {must:[]};
         allMarked.textContent = ""
         createType();
-        fetch("/api/clear");
+        fetch("/api/clear").then(data=>data.json()).then(data=>addDocsHTML(data));
     })
 
     allMarked.appendChild(marked);
@@ -327,7 +328,7 @@ function createTema(text) {
     tipo.appendChild(document.createTextNode("Tipo:"))
 
     let d = document.createElement("div")
-    const tipos = ['Formulação Política', 'Formulação política', 'Documento', 'Conceito', 'Evento', 'Organização']
+    const tipos = ['Formulação Política', 'Documento', 'Conceito', 'Evento', 'Organização']
 
     d.appendChild(tipo);
 
@@ -389,8 +390,10 @@ function createTema(text) {
     send.classList.add("send")
     send.appendChild(document.createTextNode("Enviar"))
     send.addEventListener("click",()=>{
+        addJsonSearch("text",search.value);
         fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
         .then(data=>addDocsHTML(data))
+        filter.must.pop();
     })
     
     column.appendChild(send);
@@ -404,9 +407,16 @@ function addJsonSearch(key,value){
 }
 
 function addDocsHTML(data) {
-    console.log(data.length);
     content.innerHTML  = "";
-    try{for(doc of data){
+    try{
+        let div = document.createElement("div");
+        div.classList.add("docs");
+        if(data.length < 1000)
+        div.innerHTML = "<p>Número de documentos encontrados: "+ data.length +".</p>";
+        else div.innerHTML = "<p>Número de documentos encontrados: +1000.</p>";
+        content.appendChild(div);
+        
+        for(doc of data){
         let div = document.createElement("div");
         div.classList.add("docs");
         div.innerHTML = "Documento de número: <strong>" + 
@@ -417,7 +427,6 @@ function addDocsHTML(data) {
         content.appendChild(div);
     }}catch{
         
-        console.log("kkkkkk")
         let div = document.createElement("div");
         div.classList.add("docs");
         div.innerHTML = "<p>Resultado não encontrado.</p>";
