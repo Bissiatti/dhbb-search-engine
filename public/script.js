@@ -11,8 +11,11 @@ var filter = {must:[]};
 
 
 lupa.addEventListener("click",()=>{
-    fetch("/api/search/" + search.value).then(data=>data.json())
+    if (search.value != ""){
+        fetch("/api/search/" + search.value).then(data=>data.json())
         .then(data=>addDocsHTML(data));
+    }
+
 })
 
 function createType() {
@@ -284,12 +287,20 @@ function createBio(text) {
     send.classList.add("send")
     send.appendChild(document.createTextNode("Enviar"))
     send.addEventListener("click",()=>{
-        addJsonSearch("text",search.value);
-        fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
-        .then(data=>{
-            addDocsHTML(data);
-        })
-        filter.must.pop();
+        if(search.value != ""){
+            addJsonSearch("text",search.value);
+            fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
+            .then(data=>{
+                addDocsHTML(data);
+            })
+            filter.must.pop();
+        }
+        else{
+            fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
+            .then(data=>{
+                addDocsHTML(data);
+            })
+        }
     })
     
     column.appendChild(send);
@@ -390,10 +401,20 @@ function createTema(text) {
     send.classList.add("send")
     send.appendChild(document.createTextNode("Enviar"))
     send.addEventListener("click",()=>{
-        addJsonSearch("text",search.value);
-        fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
-        .then(data=>addDocsHTML(data))
-        filter.must.pop();
+        if(search.value != ""){
+            addJsonSearch("text",search.value);
+            fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
+            .then(data=>{
+                addDocsHTML(data);
+            })
+            filter.must.pop();
+        }
+        else{
+            fetch("/api/fil/"+JSON.stringify(filter)).then(data=>data.json())
+            .then(data=>{
+                addDocsHTML(data);
+            })
+        }
     })
     
     column.appendChild(send);
