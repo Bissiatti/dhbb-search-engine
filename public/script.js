@@ -396,6 +396,26 @@ function createTema(text) {
     
     column.appendChild(d);
 
+    tipo = document.createElement("div")
+    tipo.classList.add("infoMark")
+    tipo.appendChild(document.createTextNode("Autor do documento:"))
+
+    let form = document.createElement("form");
+    let input = document.createElement("input");
+    form.addEventListener("submit",(e)=>{
+        e.preventDefault();
+        addJsonSearch("autor",e.target[0].value);
+        let marked = document.createElement("div")
+        marked.classList.add("marked")
+        marked.appendChild(document.createTextNode(e.target[0].value))
+        allMarked.appendChild(marked);
+        e.path[0].innerHTML = "";
+    })
+
+    form.appendChild(tipo);
+    form.appendChild(input);
+    column.appendChild(form);
+
     
     let send = document.createElement("button")
     send.classList.add("send")
@@ -418,6 +438,8 @@ function createTema(text) {
     })
     
     column.appendChild(send);
+
+    
 
 }
 
